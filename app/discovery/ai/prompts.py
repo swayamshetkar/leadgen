@@ -1,0 +1,2 @@
+IDENTITY_VALIDATION_PROMPT = "Validate business identity, target industry, and location as structured JSON."
+CONTACT_VALIDATION_PROMPT = "Validate contact ownership and final contactability as structured JSON."
