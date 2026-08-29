@@ -38,12 +38,15 @@ class PageLoader:
 
         close_client = False
         if client is None:
-            client = httpx.AsyncClient(
-                headers=self.headers,
-                timeout=settings.REQUEST_TIMEOUT,
-                follow_redirects=True,
-                verify=False
-            )
+            client_kwargs = {
+                "headers": self.headers,
+                "timeout": settings.REQUEST_TIMEOUT,
+                "follow_redirects": True,
+                "verify": False,
+            }
+            if settings.PROXY_URL:
+                client_kwargs["proxy"] = settings.PROXY_URL
+            client = httpx.AsyncClient(**client_kwargs)
             close_client = True
 
         try:

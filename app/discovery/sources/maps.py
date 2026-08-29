@@ -32,7 +32,14 @@ class MapsDiscoverySource(BaseDiscoverySource):
             "Accept": "application/json"
         }
 
-        async with httpx.AsyncClient(headers=headers, timeout=settings.REQUEST_TIMEOUT) as client:
+        client_kwargs = {
+            "headers": headers,
+            "timeout": settings.REQUEST_TIMEOUT,
+        }
+        if settings.PROXY_URL:
+            client_kwargs["proxy"] = settings.PROXY_URL
+
+        async with httpx.AsyncClient(**client_kwargs) as client:
             for loc in locations:
                 queries_to_try = [
                     f"{industry} in {loc}",

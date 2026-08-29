@@ -57,7 +57,16 @@ class WebsiteCrawler:
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         }
 
-        async with httpx.AsyncClient(headers=headers, timeout=settings.REQUEST_TIMEOUT, follow_redirects=True, verify=False) as client:
+        client_kwargs = {
+            "headers": headers,
+            "timeout": settings.REQUEST_TIMEOUT,
+            "follow_redirects": True,
+            "verify": False,
+        }
+        if settings.PROXY_URL:
+            client_kwargs["proxy"] = settings.PROXY_URL
+
+        async with httpx.AsyncClient(**client_kwargs) as client:
             # 1. Robots.txt Inspection & Sitemap Discovery
             robots_info = await self.robots_inspector.inspect(norm_start, client=client)
             robots_parser = robots_info.get("parser")

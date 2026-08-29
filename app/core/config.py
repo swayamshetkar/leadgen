@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     APP_PORT: int = 8000
     
     DATABASE_URL: str = "sqlite+aiosqlite:///./leadgen.db"
+    PROXY_URL: Optional[str] = None
     
     REQUEST_TIMEOUT: int = 20
     SEARCH_REQUEST_TIMEOUT: int = 5

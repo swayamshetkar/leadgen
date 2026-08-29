@@ -36,16 +36,19 @@ class PlaywrightManager:
             if not self._is_initialized:
                 try:
                     self._playwright = await async_playwright().start()
-                    self._browser = await self._playwright.chromium.launch(
-                        headless=True,
-                        args=[
+                    launch_kwargs = {
+                        "headless": True,
+                        "args": [
                             "--disable-gpu",
                             "--no-sandbox",
                             "--disable-dev-shm-usage",
                             "--disable-setuid-sandbox",
                             "--disable-extensions",
                         ]
-                    )
+                    }
+                    if settings.PROXY_URL:
+                        launch_kwargs["proxy"] = {"server": settings.PROXY_URL}
+                    self._browser = await self._playwright.chromium.launch(**launch_kwargs)
                     self._is_initialized = True
                     logger.info("Playwright headless browser initialized successfully")
                 except Exception as e:

@@ -82,7 +82,15 @@ class SearchDiscoverySource(BaseDiscoverySource):
             "Accept-Language": f"{request.settings.language},en-US;q=0.8,en;q=0.5",
         }
 
-        async with httpx.AsyncClient(headers=headers, timeout=settings.SEARCH_REQUEST_TIMEOUT, follow_redirects=True) as client:
+        client_kwargs = {
+            "headers": headers,
+            "timeout": settings.SEARCH_REQUEST_TIMEOUT,
+            "follow_redirects": True,
+        }
+        if settings.PROXY_URL:
+            client_kwargs["proxy"] = settings.PROXY_URL
+
+        async with httpx.AsyncClient(**client_kwargs) as client:
             for q_obj in selected_queries:
                 try:
                     await self.rate_limiter.acquire()
